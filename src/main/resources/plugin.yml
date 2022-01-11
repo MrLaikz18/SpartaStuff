@@ -1,0 +1,8 @@
+name: SpartaStuff
+version: 1.0
+author: MrLaikz
+main: fr.mrlaikz.spartastuff.SpartaStuff
+api-version: 1.18
+commands:
+  stuff:
+    description: "Ajout de Stuff"

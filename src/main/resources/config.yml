@@ -1,0 +1,6 @@
+message:
+  list_armor: "&6%name%"
+  reloaded: "&aPlugin Reloaded"
+  armor_added: "&aArmure ajoutée"
+
+armor:
