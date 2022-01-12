@@ -3,6 +3,7 @@ package fr.mrlaikz.spartastuff.commands;
 import fr.mrlaikz.spartastuff.Armor;
 import fr.mrlaikz.spartastuff.Manager;
 import fr.mrlaikz.spartastuff.SpartaStuff;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -32,8 +33,10 @@ public class StuffCommand implements CommandExecutor {
 
                 if(args.length == 1) {
                     if(args[0].equalsIgnoreCase("reload")) {
+                        Bukkit.getOnlinePlayers().forEach(player -> manager.removeStuffEffect(player));
                         plugin.reloadConfig();
                         manager.loadArmors();
+                        Bukkit.getOnlinePlayers().forEach(player -> manager.giveStuffEffect(player));
                         p.sendMessage(plugin.strConfig("message.reloaded"));
                     }
 

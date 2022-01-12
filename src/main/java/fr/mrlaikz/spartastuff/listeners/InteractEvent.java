@@ -12,9 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 
-import java.util.Arrays;
-import java.util.Objects;
-
 public class InteractEvent implements Listener {
 
     private Manager manager;
@@ -29,13 +26,7 @@ public class InteractEvent implements Listener {
         PlayerInventory inventory = player.getInventory();
 
         if (e.getNewItem() != null && e.getNewItem().getType() != Material.AIR) {
-            Armor armor = getSpecialArmor(inventory.getArmorContents());
-            if (armor != null) {
-                PotionEffect currentEffect = player.getPotionEffect(armor.getEffect());
-                if(currentEffect == null || currentEffect.getAmplifier() < armor.getAmplifier()){
-                    player.addPotionEffect(new PotionEffect(armor.getEffect(), Integer.MAX_VALUE, armor.getAmplifier()));
-                }
-            }
+            manager.giveStuffEffect(player);
         } else {
             ItemStack[] oldArmorContent = inventory.getArmorContents().clone();
             switch (e.getSlotType()){
@@ -44,23 +35,11 @@ public class InteractEvent implements Listener {
                 case CHEST -> oldArmorContent[2] = e.getOldItem();
                 case HEAD -> oldArmorContent[3] = e.getOldItem();
             }
-            Armor oldArmor = getSpecialArmor(oldArmorContent);
+            Armor oldArmor = manager.getSpecialArmor(oldArmorContent);
             if(oldArmor != null){
                 player.removePotionEffect(oldArmor.getEffect());
             }
         }
-    }
-
-    private Armor getSpecialArmor(ItemStack[] armorContent){
-        if (Arrays.stream(armorContent).anyMatch(Objects::isNull)) {
-            return null;
-        }
-        for (Armor armor : manager.getArmors()) {
-            if (Arrays.equals(armorContent, armor.getArmorContent())) {
-                return armor;
-            }
-        }
-        return null;
     }
 
 }
