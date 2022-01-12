@@ -1,13 +1,17 @@
 package fr.mrlaikz.spartastuff;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class Manager {
 
@@ -49,6 +53,32 @@ public class Manager {
             config.set("armors." + name + ".effect", effect);
             config.set("armors." + name + ".amplifier", amp);
             plugin.saveConfig();
+        }
+    }
+
+    public Armor getSpecialArmor(ItemStack[] armorContent){
+        if (Arrays.stream(armorContent).anyMatch(Objects::isNull)) {
+            return null;
+        }
+        for (Armor armor : getArmors()) {
+            if (Arrays.equals(armorContent, armor.getArmorContent())) {
+                return armor;
+            }
+        }
+        return null;
+    }
+
+    public void giveStuffEffect(Player player){
+        Armor armor = getSpecialArmor(player.getInventory().getArmorContents());
+        if (armor != null) {
+            player.addPotionEffect(new PotionEffect(armor.getEffect(), Integer.MAX_VALUE, armor.getAmplifier()));
+        }
+    }
+
+    public void removeStuffEffect(Player player){
+        Armor armor = getSpecialArmor(player.getInventory().getArmorContents());
+        if (armor != null) {
+            player.removePotionEffect(armor.getEffect());
         }
     }
 
