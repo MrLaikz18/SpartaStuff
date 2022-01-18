@@ -60,11 +60,15 @@ public class StuffCommand implements CommandExecutor {
                 }
                 if(args.length == 4) {
                     if(args[0].equalsIgnoreCase("set")) {
-                        String name = args[1];
-                        PotionEffectType eff = PotionEffectType.getByName(args[2]);
-                        int amp = Integer.parseInt(args[3]);
-                        manager.writeArmor(p, name, eff, amp);
-                        p.sendMessage(plugin.strConfig("message.armor_added"));
+                        if(p.getInventory().getArmorContents().length == 4) {
+                            String name = args[1];
+                            PotionEffectType eff = PotionEffectType.getByName(args[2]);
+                            int amp = Integer.parseInt(args[3]);
+                            manager.writeArmor(p, name, eff, amp);
+                            p.sendMessage(plugin.strConfig("message.armor_added"));
+                        } else {
+                            p.sendMessage("§cTu n'a pas toute l'armure sur toi !");
+                        }
                     }
                 }
 
