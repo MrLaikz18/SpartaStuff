@@ -1,6 +1,5 @@
 package fr.mrlaikz.spartastuff;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -31,28 +30,32 @@ public class Manager {
 
     public void loadArmors() {
         listArmors.clear();
-        for(String armors : config.getConfigurationSection("armors").getKeys(false)) {
-            ItemStack helmet = config.getItemStack("armors." + armors + ".helmet");
-            ItemStack chestplate = config.getItemStack("armors." + armors + ".chestplate");
-            ItemStack leggings = config.getItemStack("armors." + armors + ".leggings");
-            ItemStack boots = config.getItemStack("armors." + armors + ".boots");
-            PotionEffectType type = PotionEffectType.getByName(config.getString("armors." + armors + ".effect"));
-            int amp = config.getInt("armors." + armors + ".amplifier");
-            Armor a = new Armor(armors, helmet, chestplate, leggings, boots, type, amp);
-            listArmors.add(a);
+        if(config.getConfigurationSection("armors") != null) {
+            for (String armors : config.getConfigurationSection("armors").getKeys(false)) {
+                ItemStack helmet = config.getItemStack("armors." + armors + ".helmet");
+                ItemStack chestplate = config.getItemStack("armors." + armors + ".chestplate");
+                ItemStack leggings = config.getItemStack("armors." + armors + ".leggings");
+                ItemStack boots = config.getItemStack("armors." + armors + ".boots");
+                PotionEffectType type = PotionEffectType.getByName(config.getString("armors." + armors + ".effect"));
+                int amp = config.getInt("armors." + armors + ".amplifier");
+                Armor a = new Armor(armors, helmet, chestplate, leggings, boots, type, amp);
+                listArmors.add(a);
+            }
         }
     }
 
     public void writeArmor(Player player, String name, PotionEffectType effect, int amp) {
         PlayerInventory inventory = player.getInventory();
-        if(config.getConfigurationSection("armors." + name) == null) {
+        if(!config.isConfigurationSection("armors." + name)) {
             config.set("armors." + name + ".helmet", inventory.getHelmet());
             config.set("armors." + name + ".chestplate", inventory.getChestplate());
             config.set("armors." + name + ".leggings", inventory.getLeggings());
             config.set("armors." + name + ".boots", inventory.getBoots());
-            config.set("armors." + name + ".effect", effect);
+            config.set("armors." + name + ".effect", effect.getName());
             config.set("armors." + name + ".amplifier", amp);
             plugin.saveConfig();
+        } else {
+            plugin.getLogger().info("Impossible d'écrire cette armure");
         }
     }
 
