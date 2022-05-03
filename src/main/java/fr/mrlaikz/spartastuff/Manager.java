@@ -1,9 +1,13 @@
 package fr.mrlaikz.spartastuff;
 
+import com.destroystokyo.paper.Namespaced;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -74,7 +78,26 @@ public class Manager {
     public void giveStuffEffect(Player player){
         Armor armor = getSpecialArmor(player.getInventory().getArmorContents());
         if (armor != null) {
-            player.addPotionEffect(new PotionEffect(armor.getEffect(), Integer.MAX_VALUE, armor.getAmplifier()));
+
+            //DATA LEVEL
+            NamespacedKey key = new NamespacedKey(plugin, "level");
+            PersistentDataContainer hdata = armor.getArmorContent()[0].getItemMeta().getPersistentDataContainer();
+            int lvl = hdata.get(key, PersistentDataType.INTEGER);
+
+            //EFFET
+            player.addPotionEffect(new PotionEffect(armor.getEffect(), Integer.MAX_VALUE, lvl));
+
+            //ACUTALISATION LORE
+            for(ItemStack it : armor.getArmorContent()) {
+                if(hdata == null || !hdata.has(key, PersistentDataType.INTEGER)) {
+                    hdata.set(key, PersistentDataType.INTEGER, 0);
+                } else {
+                    List<String> lore = it.getLore();
+                    lore.add("");
+                    lore.add("§aNiveau d'amélioration: " + lvl);
+                    it.setLore(lore);
+                }
+            }
         }
     }
 

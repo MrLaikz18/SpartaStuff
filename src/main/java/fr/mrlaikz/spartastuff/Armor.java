@@ -19,7 +19,6 @@ public class Armor {
         armorContent[1] = leggings;
         armorContent[2] = chestplate;
         armorContent[3] = helmet;
-
     }
 
     public ItemStack[] getArmorContent(){
