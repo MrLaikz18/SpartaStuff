@@ -21,14 +21,14 @@ public class Manager {
     private SpartaStuff plugin;
     private FileConfiguration config;
 
-    private List<Armor> listArmors = new ArrayList<>();
+    private static List<Armor> listArmors = new ArrayList<>();
 
     public Manager(SpartaStuff plugin) {
         this.plugin = plugin;
         this.config = plugin.getConfig();
     }
 
-    public List<Armor> getArmors() {
+    public static List<Armor> getArmors() {
         return listArmors;
     }
 
@@ -78,26 +78,7 @@ public class Manager {
     public void giveStuffEffect(Player player){
         Armor armor = getSpecialArmor(player.getInventory().getArmorContents());
         if (armor != null) {
-
-            //DATA LEVEL
-            NamespacedKey key = new NamespacedKey(plugin, "level");
-            PersistentDataContainer hdata = armor.getArmorContent()[0].getItemMeta().getPersistentDataContainer();
-            int lvl = hdata.get(key, PersistentDataType.INTEGER);
-
-            //EFFET
-            player.addPotionEffect(new PotionEffect(armor.getEffect(), Integer.MAX_VALUE, lvl));
-
-            //ACUTALISATION LORE
-            for(ItemStack it : armor.getArmorContent()) {
-                if(hdata == null || !hdata.has(key, PersistentDataType.INTEGER)) {
-                    hdata.set(key, PersistentDataType.INTEGER, 0);
-                } else {
-                    List<String> lore = it.getLore();
-                    lore.add("");
-                    lore.add("§aNiveau d'amélioration: " + lvl);
-                    it.setLore(lore);
-                }
-            }
+            player.addPotionEffect(new PotionEffect(armor.getEffect(), Integer.MAX_VALUE, armor.getAmplifier()));
         }
     }
 

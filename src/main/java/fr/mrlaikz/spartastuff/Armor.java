@@ -1,7 +1,10 @@
 package fr.mrlaikz.spartastuff;
 
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Arrays;
 
 public class Armor {
 
@@ -36,4 +39,5 @@ public class Armor {
     public String getName() {
         return name;
     }
+
 }

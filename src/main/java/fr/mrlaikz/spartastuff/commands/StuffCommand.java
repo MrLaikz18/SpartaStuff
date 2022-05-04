@@ -11,11 +11,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Optional;
 
 public class StuffCommand implements CommandExecutor {
@@ -51,24 +53,19 @@ public class StuffCommand implements CommandExecutor {
                     }
 
                     if(args[0].equalsIgnoreCase("lvlup")) {
-                        Armor a = manager.getSpecialArmor(p.getInventory().getArmorContents());
-
-                        NamespacedKey key = new NamespacedKey(plugin, "level");
-                        PersistentDataContainer dhelmet = a.getArmorContent()[3].getItemMeta().getPersistentDataContainer();
-                        PersistentDataContainer dchestplate = a.getArmorContent()[2].getItemMeta().getPersistentDataContainer();
-                        PersistentDataContainer dleggings = a.getArmorContent()[1].getItemMeta().getPersistentDataContainer();
-                        PersistentDataContainer dboots = a.getArmorContent()[0].getItemMeta().getPersistentDataContainer();
-
-                        if(dhelmet.has(key, PersistentDataType.INTEGER)) {
-                            dhelmet.set(key, PersistentDataType.INTEGER, 1);
+                        for(ItemStack it : p.getInventory().getArmorContents()) {
+                            List<String> lore = it.getLore();
+                            if(lore.size() <= 5) {
+                                lore.add("");
+                                lore.add("§aNiveau d'amélioration:");
+                                lore.add("1");
+                            } else {
+                                int lvl = Integer.parseInt(lore.get(6));
+                                lore.remove(6);
+                                lore.add(String.valueOf(lvl+1));
+                            }
+                            it.setLore(lore);
                         }
-
-                        int lvl = dhelmet.get(key, PersistentDataType.INTEGER);
-                        lvl+=1;
-                        dhelmet.set(key, PersistentDataType.INTEGER, lvl);
-                        dchestplate.set(key, PersistentDataType.INTEGER, lvl);
-                        dleggings.set(key, PersistentDataType.INTEGER, lvl);
-                        dboots.set(key, PersistentDataType.INTEGER, lvl);
 
                         p.sendMessage("§aL'armure a bien été améliorée !");
 
