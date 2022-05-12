@@ -5,14 +5,12 @@ import fr.mrlaikz.spartastuff.listeners.InteractEvent;
 import fr.mrlaikz.spartastuff.listeners.JoinQuitListeners;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
 
 public class SpartaStuff extends JavaPlugin {
 
     private Manager manager;
+    public static SpartaStuff instance;
 
     @Override
     public void onEnable() {
@@ -20,6 +18,7 @@ public class SpartaStuff extends JavaPlugin {
         saveDefaultConfig();
         manager = new Manager(this);
         manager.loadArmors();
+        instance = this;
 
         //LISTENERS
         getServer().getPluginManager().registerEvents(new InteractEvent(this), this);
@@ -48,5 +47,7 @@ public class SpartaStuff extends JavaPlugin {
         return ChatColor.translateAlternateColorCodes('&', getConfig().getString(path));
     }
 
-
+    public static SpartaStuff getInstance() {
+        return instance;
+    }
 }

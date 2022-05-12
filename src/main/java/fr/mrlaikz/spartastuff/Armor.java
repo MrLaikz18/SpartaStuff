@@ -1,10 +1,7 @@
 package fr.mrlaikz.spartastuff;
 
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.Arrays;
 
 public class Armor {
 
@@ -12,16 +9,18 @@ public class Armor {
     private PotionEffectType effect;
     private int amplifier;
     private ItemStack[] armorContent;
+    private int id;
 
-    public Armor(String name, ItemStack helmet, ItemStack chestplate, ItemStack leggings, ItemStack boots, PotionEffectType effect, int amplifier) {
+    public Armor(String name, ItemStack helmet, ItemStack chestplate, ItemStack leggings, ItemStack boots, PotionEffectType effect, int amplifier, int id) {
         this.name = name;
         this.effect = effect;
         this.amplifier = amplifier;
         armorContent = new ItemStack[4];
-        armorContent[0] = boots;
-        armorContent[1] = leggings;
-        armorContent[2] = chestplate;
-        armorContent[3] = helmet;
+        armorContent[0] = helmet;
+        armorContent[1] = chestplate;
+        armorContent[2] = leggings;
+        armorContent[3] = boots;
+        this.id = id;
     }
 
     public ItemStack[] getArmorContent(){
@@ -38,6 +37,10 @@ public class Armor {
 
     public String getName() {
         return name;
+    }
+
+    public int getId() {
+        return id;
     }
 
 }

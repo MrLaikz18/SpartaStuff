@@ -1,6 +1,5 @@
 package fr.mrlaikz.spartastuff.commands;
 
-import com.destroystokyo.paper.Namespaced;
 import fr.mrlaikz.spartastuff.Armor;
 import fr.mrlaikz.spartastuff.Manager;
 import fr.mrlaikz.spartastuff.SpartaStuff;
@@ -12,12 +11,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Optional;
 
 public class StuffCommand implements CommandExecutor {
@@ -52,23 +49,26 @@ public class StuffCommand implements CommandExecutor {
                         }
                     }
 
+                    if(args[0].equalsIgnoreCase("info")) { 
+                        ItemStack h = p.getInventory().getHelmet();
+                        p.sendMessage("ID: "+h.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "id"), PersistentDataType.INTEGER));
+                        p.sendMessage("LVL: " + h.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, "level"), PersistentDataType.INTEGER));
+                    }
+
                     if(args[0].equalsIgnoreCase("lvlup")) {
                         for(ItemStack it : p.getInventory().getArmorContents()) {
-                            List<String> lore = it.getLore();
-                            if(lore.size() <= 5) {
-                                lore.add("");
-                                lore.add("§aNiveau d'amélioration:");
-                                lore.add("1");
+                            ItemMeta itM = it.getItemMeta();
+                            NamespacedKey k = new NamespacedKey(SpartaStuff.getInstance(), "level");
+                            if(itM.getPersistentDataContainer().has(k, PersistentDataType.INTEGER)) {
+                                int lvl = itM.getPersistentDataContainer().get(k, PersistentDataType.INTEGER);
+                                lvl +=1;
+                                itM.getPersistentDataContainer().set(k, PersistentDataType.INTEGER, lvl);
+                                it.setItemMeta(itM);
                             } else {
-                                int lvl = Integer.parseInt(lore.get(6));
-                                lore.remove(6);
-                                lore.add(String.valueOf(lvl+1));
+                                itM.getPersistentDataContainer().set(k, PersistentDataType.INTEGER, 1);
+                                it.setItemMeta(itM);
                             }
-                            it.setLore(lore);
                         }
-
-                        p.sendMessage("§aL'armure a bien été améliorée !");
-
                     }
 
                 }else if(args.length == 2){
@@ -82,15 +82,37 @@ public class StuffCommand implements CommandExecutor {
                         }else{
                             p.sendMessage("§cCette armure n'existe pas.");
                         }
+                    } else if(args[0].equalsIgnoreCase("getbyid")) {
+                        int id = Integer.parseInt(args[1]);
+                        Armor a = manager.getArmorById(id);
+                        if(a != null){
+                            for (ItemStack itemStack : a.getArmorContent()) {
+                                p.getInventory().addItem(itemStack);
+                            }
+                        }else{
+                            p.sendMessage("§cCette armure n'existe pas.");
+                        }
                     }
                 }
-                if(args.length == 4) {
+                if(args.length == 5) {
                     if(args[0].equalsIgnoreCase("set")) {
                         if(p.getInventory().getArmorContents().length == 4) {
                             String name = args[1];
                             PotionEffectType eff = PotionEffectType.getByName(args[2]);
                             int amp = Integer.parseInt(args[3]);
-                            manager.writeArmor(p, name, eff, amp);
+                            int id = Integer.parseInt(args[4]);
+
+                            ItemStack content[] = new ItemStack[4];
+                            int i = 0;
+                            for(ItemStack it : p.getInventory().getArmorContents()) {
+                                ItemMeta itM = it.getItemMeta();
+                                itM.getPersistentDataContainer().set(new NamespacedKey(plugin, "id"), PersistentDataType.INTEGER, id);
+                                it.setItemMeta(itM);
+                                content[i] = it;
+                                i++;
+                            }
+
+                            manager.writeArmor(content, name, eff, amp, id);
                             p.sendMessage(plugin.strConfig("message.armor_added"));
                         } else {
                             p.sendMessage("§cTu n'a pas toute l'armure sur toi !");

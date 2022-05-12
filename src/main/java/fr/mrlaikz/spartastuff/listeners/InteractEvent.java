@@ -10,7 +10,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.potion.PotionEffect;
 
 public class InteractEvent implements Listener {
 
@@ -40,6 +39,7 @@ public class InteractEvent implements Listener {
                 player.removePotionEffect(oldArmor.getEffect());
             }
         }
+
     }
 
 }
