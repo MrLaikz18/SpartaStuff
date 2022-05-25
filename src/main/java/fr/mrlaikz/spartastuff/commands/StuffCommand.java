@@ -3,6 +3,7 @@ package fr.mrlaikz.spartastuff.commands;
 import fr.mrlaikz.spartastuff.Armor;
 import fr.mrlaikz.spartastuff.Manager;
 import fr.mrlaikz.spartastuff.SpartaStuff;
+import fr.mrlaikz.spartastuff.menu.StuffMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
@@ -32,6 +33,16 @@ public class StuffCommand implements CommandExecutor {
 
         if(sender instanceof Player) {
             Player p = (Player) sender;
+            if(args.length == 0) {
+                Armor a = manager.getSpecialArmor(p.getInventory().getArmorContents());
+                if(a == null) {
+                    p.sendMessage("§cVous ne possedez pas l'armure complète !");
+                    return false;
+                }
+                StuffMenu menu = new StuffMenu(p);
+                menu.open();
+            }
+
             if(p.hasPermission("sparta.stuff")) {
 
                 if(args.length == 1) {
