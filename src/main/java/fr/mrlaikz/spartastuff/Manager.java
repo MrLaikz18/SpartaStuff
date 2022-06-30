@@ -5,6 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -67,17 +68,22 @@ public class Manager {
         if (Arrays.stream(armorContent).anyMatch(Objects::isNull)) {
             return null;
         }
-        if(!armorContent[0].hasItemMeta() || !armorContent[0].getItemMeta().getPersistentDataContainer().has(keyid)) {
+        if(!armorContent[0].hasItemMeta() || !armorContent[0].getItemMeta().getPersistentDataContainer().has(keyid, PersistentDataType.INTEGER)) {
             return null;
         }
-        int id0 = armorContent[0].getItemMeta().getPersistentDataContainer().get(keyid, PersistentDataType.INTEGER);
-        for(ItemStack it : armorContent) {
-            int idb = it.getItemMeta().getPersistentDataContainer().get(keyid, PersistentDataType.INTEGER);
-            if(idb != id0) {
-                return null;
+
+        try {
+            PersistentDataContainer persistentDataContainer = armorContent[0].getItemMeta().getPersistentDataContainer();
+            int id0 = persistentDataContainer.get(keyid, PersistentDataType.INTEGER);
+            for(ItemStack it : armorContent) {
+                int idb = it.getItemMeta().getPersistentDataContainer().get(keyid, PersistentDataType.INTEGER);
+                if(idb != id0) {
+                    return null;
+                }
             }
-        }
-        return getArmorById(id0);
+            return getArmorById(id0);
+        }catch (NullPointerException ignored) {}
+        return null;
     }
 
     public Armor getArmorById(int id) {
