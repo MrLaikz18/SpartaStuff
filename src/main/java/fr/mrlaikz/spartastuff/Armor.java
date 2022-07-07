@@ -5,11 +5,11 @@ import org.bukkit.potion.PotionEffectType;
 
 public class Armor {
 
+    private int id;
     private String name;
     private PotionEffectType effect;
     private int amplifier;
     private ItemStack[] armorContent;
-    private int id;
 
     public Armor(String name, ItemStack helmet, ItemStack chestplate, ItemStack leggings, ItemStack boots, PotionEffectType effect, int amplifier, int id) {
         this.name = name;
